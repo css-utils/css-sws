@@ -7,7 +7,7 @@ var isValid = require('valid-css-props');
 /**
  * Expose `cssSWS` function.
  * @param {String} str
- * @param {Object} obj
+ * @param {Object} opts
  *
  * Options
  * - filename
