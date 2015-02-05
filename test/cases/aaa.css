@@ -1,7 +1,13 @@
+@charset "utf-8"
+
+@import "foo.css"
+
 aaa
-  bbb
-  bbb
-  bbb
+
+  abc
+
+  def
+  ghi
     ---
     ???
     #*(#*@$*&
@@ -12,8 +18,41 @@ aaa
     background = 'blue'
     z-index (1 + 1)
 
-ggg
-ggg
+
+  xxx
+    color black
+
+    ppp
+    ccc
+      visibility b
+
+
+
+// comment
+  // comment
+    // comment
+
+
+
+xyz, lmn
+123, 456
+  &(foo)-(bar)
+  &:first-child
+    position relative;
+    opacity 0;
+    z-index -1;
+
+    // comment
+  // comment
+
+hhh
+  ul
+    li
+      a
+        color pink
+  b
+    color orange
+
 ggg
   hhh
   iii

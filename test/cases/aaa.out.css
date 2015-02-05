@@ -1,7 +1,9 @@
+@charset "utf-8";
+@import "foo.css";
 aaa {
-  bbb,
-  bbb,
-  bbb {
+  abc,
+  def,
+  ghi {
     ---
     ???
     #*(#*@$*&
@@ -12,10 +14,38 @@ aaa {
     background: = 'blue';
     z-index: (1 + 1);
   }
+  xxx {
+    color: black;
+    ppp,
+    ccc {
+      visibility: b;
+    }
+  }
 }
 
-ggg,
-ggg,
+xyz, lmn,
+123, 456 {
+  &(foo)-(bar),
+  &:first-child {
+    position: relative;
+    opacity: 0;
+    z-index: -1;
+  }
+}
+
+hhh {
+  ul {
+    li {
+      a {
+        color: pink;
+      }
+    }
+  }
+  b {
+    color: orange;
+  }
+}
+
 ggg {
   hhh
   iii

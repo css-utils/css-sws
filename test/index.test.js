@@ -7,6 +7,7 @@ var readdir = fs.readdirSync;
 
 describe('should support', function(){
   readdir('test/cases').forEach(function(file){
+    if (file.charAt(0) === '.') return;
     if (~file.indexOf('.out')) return;
     var base = path.basename(file, '.css');
     var input = read('test/cases/' + file, 'utf8');

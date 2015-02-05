@@ -4,7 +4,8 @@
   "description": " Significant whitespace for stylesheets",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r should"
+    "test": "mocha -r should",
+    "watch": "mocha -r should -w --watch-extensions css"
   },
   "repository": {
     "type": "git",
