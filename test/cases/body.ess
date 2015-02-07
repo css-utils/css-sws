@@ -1,0 +1,9 @@
+import {darkGray} from '../colors'
+
+/**
+ * Apply `body` default styles.
+ */
+
+body
+  margin: 0
+  color: =props.color || darkGray

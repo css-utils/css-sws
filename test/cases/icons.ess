@@ -1,0 +1,7 @@
+
+.guide-icons
+  display: flex
+  align-items: flex-end
+  justify-content space-between
+  -webkit-user-select none
+  margin-bottom: 2rem

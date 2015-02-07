@@ -1,0 +1,25 @@
+import * as Font from '../font'
+import {inactiveGray} from '../colors'
+
+var backgroundColor = inactiveGray
+
+/**
+ * Apply `html` default styles.
+ *
+ * 1. Prevent iOS text size adjust after orientation change, without disabling user zoom.
+ * 2. `html` reset.
+ * 3. Better font rendering for webkit (https://developer.mozilla.org/en-US/docs/Web/CSS/font-smooth)
+ */
+
+html {
+  background: =backgroundColor;
+  height: 100%;
+
+  font-family: =Font.family.serif;
+  font-size: =Font.size.base + 'px';
+  font-weight: =Font.weight.base;
+
+  -webkit-text-size-adjust: 100% /* 1 */;
+  -ms-text-size-adjust: 100% /* 1 */;
+  -webkit-tap-highlight-color: rgba(0,0,0,0) /* 2 */;
+  -webkit-font-smoothing: antialiased /* 3 */; }

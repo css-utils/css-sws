@@ -52,7 +52,7 @@ Parser.prototype.loop = function() {
 Parser.prototype.handleProperty = function(line) {
   var parts = line.trim().split(/ +/);
   var prop = parts[0].replace(/\:$/, '');
-  if (!isValidProp(prop)) return;
+  if (!this.isValidProp(prop)) return;
 
   if (parts[1].trim().charAt(0) === ':') parts[1] = '';
 
@@ -64,6 +64,7 @@ Parser.prototype.handleProperty = function(line) {
 };
 
 Parser.prototype.handleIndent = function(line) {
+  if (isComment(line)) return;
   var indent = line === '' ? this.indent : this.countSpaces(line);
 
   if (this.indent < indent) this.beginBlock(indent);
@@ -123,6 +124,12 @@ Parser.prototype.countSpaces = function(line) {
   return ((/^( *)/.exec(line) || [])[1] || '').length;
 };
 
+Parser.prototype.isValidProp = function(prop) {
+  if (isValidProp(prop) || /^-(webkit|ms|moz|o)/.test(prop)) return true;
+  // add any they missed
+  return !!~['align-items', 'justify-content'].indexOf(prop);
+};
+
 function numToWs(count) {
   var ws = '';
   for (var i = 0; i < count; i++) {
@@ -137,7 +144,7 @@ function isSignificant(line) {
 
 function isComment(line) {
   var str = line.trim();
-  return /^\/\//.test(str) || /\/\*/.test(str);
+  return /^\/\//.test(str) || /^\/\*/.test(str) || /^\*/.test(str);
 }
 
 function isBlank(line) {
