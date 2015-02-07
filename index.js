@@ -42,8 +42,10 @@ Parser.prototype.loop = function() {
   var line = this.lines[cursor];
   if (typeof line === 'undefined') return;
 
-  this.handleProperty(line);
-  this.handleIndent(line);
+  if (isSignificant(line)) {
+    this.handleProperty(line);
+    this.handleIndent(line);
+  }
 
   this.cursor++;
   this.loop();
@@ -64,7 +66,6 @@ Parser.prototype.handleProperty = function(line) {
 };
 
 Parser.prototype.handleIndent = function(line) {
-  if (isComment(line)) return;
   var indent = line === '' ? this.indent : this.countSpaces(line);
 
   if (this.indent < indent) this.beginBlock(indent);
@@ -126,8 +127,10 @@ Parser.prototype.countSpaces = function(line) {
 
 Parser.prototype.isValidProp = function(prop) {
   if (isValidProp(prop) || /^-(webkit|ms|moz|o)/.test(prop)) return true;
-  // add any they missed
-  return !!~['align-items', 'justify-content'].indexOf(prop);
+  // add any additional properties
+  if (prop.indexOf('align-') === 0) return true;
+  if (prop.indexOf('justify-') === 0) return true;
+  return false;
 };
 
 function numToWs(count) {
