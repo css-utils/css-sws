@@ -29,6 +29,11 @@ Parser.prototype.toString = function() {
 
   this.loop();
 
+  var self = this;
+  this.blocks.forEach(function(block) {
+    self.append(-1, ' }');
+  });
+
   return this.lines.join('\n');
 };
 

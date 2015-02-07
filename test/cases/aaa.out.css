@@ -47,3 +47,6 @@ function Test(color) {
     yield } }
 
 export var foo = '123'
+
+.test {
+  color: red; }
