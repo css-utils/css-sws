@@ -1,3 +1,4 @@
+var should = require('should');
 var compile = require('..');
 var fs = require('fs');
 var path = require('path');
@@ -16,6 +17,6 @@ describe('should support', function(){
     it(base, function(){
       var out = compile(input).trim();
       out.should.equal(output.trim());
-    })
+    });
   });
-})
+});

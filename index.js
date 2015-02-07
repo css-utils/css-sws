@@ -2,164 +2,139 @@
  * Module dependencies
  */
 
-var isValid = require('valid-css-props');
+var isValidProp = require('valid-css-props');
 
 /**
  * Expose `cssSWS` function.
  * @param {String} str
  * @param {Object} opts
- *
- * Options
- * - filename
- * - tabWidth  - default 2
- * - semiColon - default true
  */
 
 module.exports = function cssSWS(str, opts) {
-  opts = opts || {};
-  var tab = opts.tabWidth || 2;
-  var semi = opts.semiColon || true;
-  var filename = opts.filename;
+  var parser = new Parser(str, opts);
+  return parser.toString();
+};
 
-  var L = [0];
-  var sto = [];
+function Parser(str, opts) {
+  this.str = str;
+  this.lines = str.split('\n');
+  this.opts = opts || {};
+  this.tabSpacing = numToWs(this.opts.tabSize || 2);
+}
 
-  var _ = str.split('\n');
+Parser.prototype.toString = function() {
+  this.cursor = 0;
+  this.indent = 0;
+  this.blocks = [];
 
-  function lookaheadIndent(i) {
-    return spacing(nextPertinentString(_.slice(i + 1)));
-  }
+  this.loop();
 
-  function close(i) {
-    var n = L[i] / tab;
-    var buf = '';
-    while (n) buf += (blanks((tab * n--) - tab) + '}\n')
-    return buf;
-  }
+  return this.lines.join('\n');
+};
 
-  // remove empty lines
-  _ = _.filter(function(line) { return line.trim().length && line });
+Parser.prototype.loop = function() {
+  var cursor = this.cursor;
+  var line = this.lines[cursor];
+  if (typeof line === 'undefined') return;
 
-  for (var i = 0, l = _.length; i < l; i++) {
-    // remove comments
-    while (isComment(_[i])) _.splice(i, 1);
+  this.handleProperty(line);
+  this.handleIndent(line);
 
-    var spaces = spacing(_[i]);
-    var nextIndent = lookaheadIndent(i);
-    var lineIsBlank = isBlank(_[i]);
+  this.cursor++;
+  this.loop();
+};
 
+Parser.prototype.handleProperty = function(line) {
+  var parts = line.trim().split(/ +/);
+  var prop = parts[0].replace(/\:$/, '');
+  if (!isValidProp(prop)) return;
 
-    L[i-1] = L[i-1] || 0;
-    L[i]   = L[i]   || L[i-1];
+  if (parts[1].trim().charAt(0) === ':') parts[1] = '';
 
-    // append previous line if indented
-    if (L[i] < spaces) {
-      while (sto.length) {
-        var s = sto.pop();
-        // ignore whitespace and brackets
-        if (!s[1].replace(/[\{\}\s]/g, '').length) continue;
-        // if item is a valid property, parse it
-        // otherwise treat as if selector
-        var prop = parseProp.call(_, s[1], _[s[0]], semi);
-        _[s[0]] = prop.charAt(prop.length - 1) === ';'
-          ? _[s[0]].replace(s[1], prop)
-          : _[s[0]] = s[1] + (isAtRule(s[1]) ? ';' : ',');
-      }
-      // only 2 spaces at a time
-      if (spaces - L[i] > tab) {
-        throw Error('indentation over ' + tab +
-                    ' spaces on line ' + i +
-                    (filename ? ' in ' + filename : ''));
-      }
-      _[i - 1] += ' {';
-      L[i] = spaces;
-    } else if (L[i] > spaces) {
-      // we know `sto` is full of props,
-      // so let's check them now
-      parseProps.call(_, sto, semi);
-      parseProp.call(_, i-1, _[i-1], semi)
-      // insert closing brackets and get
-      // new array length
-      _.splice(i, 0, close(i));
-      l = _.length;
+  var val = parts.slice(1).join(' ');
 
-      var diff = spacing(nextPertinentString(_.slice(i + 1))) / tab;
-      if (diff) {
-        var bits = _[i].split('\n').slice(0, 0 - diff - 1);
-        _[i] = bits.join('\n')
-      }
+  if (!/\;$/.test(val.trim())) val += ';';
 
+  this.replace(0, prop + ': ' + val);
+};
 
-      L[i] = spaces;
-    } else {
-      _[i-1]
-        // don't sto whitespace
-        && !lineIsBlank
-        // push this item on the stack
-        && sto.push([i-1, _[i-1]]);
+Parser.prototype.handleIndent = function(line) {
+  var indent = line === '' ? this.indent : this.countSpaces(line);
+
+  if (this.indent < indent) this.beginBlock(indent);
+  if (this.indent > indent) this.endBlock(indent);
+
+  this.indent = indent;
+};
+
+Parser.prototype.beginBlock = function(indent) {
+  this.append(-1, ' {');
+  this.blocks.push(indent);
+};
+
+Parser.prototype.endBlock = function(indent) {
+  var self = this;
+  this.blocks = this.blocks.filter(function(block) {
+    if (indent < block) self.append(-1, ' }');
+    return indent >= block;
+  });
+};
+
+Parser.prototype.replace = function(offset, content) {
+  var pos = this.findSignificantLine(offset);
+  var count = this.countSpaces(this.lines[pos]);
+  this.lines[pos] = numToWs(count) + content;
+};
+
+Parser.prototype.append = function(offset, content) {
+  var pos = this.findSignificantLine(offset);
+  this.lines[pos] = this.lines[pos] + content;
+};
+
+Parser.prototype.prepend = function(offset, content) {
+  var pos = this.findSignificantLine(offset);
+  this.lines[pos] = content + this.lines[pos];
+};
+
+Parser.prototype.findSignificantLine = function(offset) {
+  var cursor = this.cursor;
+  var i = cursor + offset;
+  var isPos = offset > 0;
+  var lines = this.lines;
+  if (isPos) {
+    for (; i < lines.length; i++) {
+      if (isSignificant(lines[i])) return i;
     }
-
-
-    // close last line if open
-    if (i+1 === l && L[i] > 0) {
-      _.splice(i + 1, 1, close(i));
-    } else {
-    // or set next current level
-      L[i+1] = L[i];
+  } else {
+    for (; i > 0; i--) {
+      if (isSignificant(lines[i])) return i;
     }
   }
+  return i;
+};
 
-  return _.join('\n');
-}
+Parser.prototype.countSpaces = function(line) {
+  line = line.replace(/\t/g, this.tabSpacing);
+  return ((/^( *)/.exec(line) || [])[1] || '').length;
+};
 
-function parseProps(stored, semi) {
-  while (stored.length) {
-    var s = stored.pop();
-    parseProp.call(this, s[0], s[1], semi);
+function numToWs(count) {
+  var ws = '';
+  for (var i = 0; i < count; i++) {
+    ws += ' ';
   }
+  return ws;
 }
 
-function parseProp(index, string, semi) {
-  var parts = string.trim().split(' ');
-  var head = parts.shift();
-  if (!isValid(head)) return string;
-  var space = string.split(head)[0];
-  var value = parts.join(' ').trim();
-  this[index] =
-    space + head +
-    (semi ? ': ' : '') +
-    value + (value.charAt(value.length - 1) === ';' ? '' : ';')
-  return this[index];
+function isSignificant(line) {
+  return !isComment(line) && !isBlank(line);
 }
 
-function blanks(len) {
-  return '                  '.slice(0, len);
+function isComment(line) {
+  var str = line.trim();
+  return /^\/\//.test(str) || /\/\*/.test(str);
 }
 
-function spacing(str) {
-  var m = /^( *)/.exec(str);
-  return (m && m[0].length) || 0;
-}
-
-function nextPertinentString(arr) {
-  var str = '';
-  for (var i = 0, l = arr.length; i < l; i++) {
-    var str = arr[i];
-    if (isComment(str)) continue;
-    if (isBlank(str)) continue;
-    break;
-  }
-  return str;
-}
-
-function isBlank(str) {
-  return !str.trim().length;
-}
-
-function isComment(str) {
-  return /^\/\//.test(str.trim());
-}
-
-function isAtRule(str) {
-  return str.charAt(0) === '@';
+function isBlank(line) {
+  return !line.trim().length;
 }

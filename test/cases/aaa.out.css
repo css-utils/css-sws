@@ -1,52 +1,49 @@
-@charset "utf-8";
-@import "foo.css";
-aaa {
-  abc,
-  def,
-  ghi {
-    ---
-    ???
-    #*(#*@$*&
-    aa: bbbbb ccccc;
-    a b c d e f
-    color: ;
-    font: serif;
-    background: = 'blue';
-    z-index: (1 + 1);
-  }
-  xxx {
-    color: black;
-    ppp,
-    ccc {
-      visibility: b;
-    }
-  }
-}
+import foo from 'bar'
 
-xyz, lmn,
-123, 456 {
-  &(foo)-(bar),
-  &:first-child {
-    position: relative;
-    opacity: 0;
-    z-index: -1;
-  }
-}
+- console.log('')
 
-hhh {
-  ul {
-    li {
-      a {
-        color: pink;
-      }
-    }
-  }
-  b {
-    color: orange;
-  }
-}
+var color = props.color || 'red'
 
-ggg {
-  hhh
-  iii
-}
+// this is a comment
+
+/* another comment */
+
+.button,
+.btn,
+button {
+  color: =color;
+  yield
+  - debugger
+  Other(testing)
+  Foobar(color=test)
+
+  Test('green') {
+    display: none; }
+
+  if props.color === 'blue' {
+    &:active {
+      outline: none; } }
+  else {
+    color:  brown; }
+
+  each v, k in [1,2,3,4] {
+    &:nth(v) {
+      margin-left: = v + 'px'; }
+    .other {
+      padding: 20px; } }
+
+  var foo = 'red'
+
+  @media mobile {
+    yield mobile(123) }
+
+  block test(color) {
+    color: = color; } }
+
+function Test(color) {
+  color: =color;
+  &.test {
+    background: =darken(color);
+    yield } }
+
+export var foo = '123'
