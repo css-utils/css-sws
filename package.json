@@ -1,15 +1,15 @@
 {
   "name": "css-sws",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": " Significant whitespace for stylesheets",
   "main": "index.js",
   "scripts": {
-    "test": "mocha -r should",
-    "watch": "mocha -r should -w --watch-extensions css"
+    "test": "mocha",
+    "watch": "mocha -w --watch-extensions css"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/css-utils/whitespace.git"
+    "url": "https://github.com/css-utils/css-sws.git"
   },
   "keywords": [
     "css",
@@ -21,9 +21,9 @@
   "author": "Michael Andrew Vanasse <mail@mndvns.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/css-utils/whitespace/issues"
+    "url": "https://github.com/css-utils/css-sws/issues"
   },
-  "homepage": "https://github.com/css-utils/whitespace",
+  "homepage": "https://github.com/css-utils/css-sws",
   "dependencies": {
     "valid-css-props": "0.0.4"
   },
