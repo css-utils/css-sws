@@ -20,6 +20,12 @@ button
   Test('green')
     display none
 
+  [type='radio']:not(:checked) + label:after
+    display none
+    border-radius 50%
+    border 2px solid
+    border-color = $radio-empty-color
+
   if props.color === 'blue'
     &:active
       outline: none

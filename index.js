@@ -128,6 +128,7 @@ Parser.prototype.countSpaces = function(line) {
 Parser.prototype.isValidProp = function(prop) {
   if (isValidProp(prop) || /^-(webkit|ms|moz|o|khtml|epub|internal)/.test(prop)) return true;
   // add any additional properties
+  if (prop.indexOf('filter') === 0) return true;
   if (prop.indexOf('align-') === 0) return true;
   if (prop.indexOf('justify-') === 0) return true;
   return false;
