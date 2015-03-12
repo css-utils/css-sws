@@ -132,6 +132,7 @@ Parser.prototype.isValidProp = function(prop) {
   if (prop.indexOf('filter') === 0) return true;
   if (prop.indexOf('align-') === 0) return true;
   if (prop.indexOf('justify-') === 0) return true;
+  if (prop.indexOf('background-') === 0) return true;
   return false;
 };
 
