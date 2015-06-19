@@ -25,7 +25,7 @@
   },
   "homepage": "https://github.com/css-utils/css-sws",
   "dependencies": {
-    "valid-css-props": "0.0.4"
+    "valid-css-props": "0.0.5"
   },
   "devDependencies": {
     "mocha": "^2.1.0",
