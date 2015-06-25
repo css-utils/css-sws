@@ -136,6 +136,7 @@ Parser.prototype.isValidProp = function(prop) {
   if (prop.indexOf('will-change') === 0) return true;
   if (prop.indexOf('flex') === 0) return true;
   if (prop.indexOf('animation') === 0) return true;
+  if (prop.indexOf('text-') === 0) return true;
   return false;
 };
 
