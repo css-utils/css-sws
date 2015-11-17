@@ -2,7 +2,7 @@
  * Module dependencies
  */
 
-var isValidProp = require('valid-css-props');
+var isValidProp = require('css-props');
 
 /**
  * Expose `cssSWS` function.
@@ -54,7 +54,7 @@ Parser.prototype.loop = function() {
 Parser.prototype.handleProperty = function(line) {
   var parts = line.trim().split(/ +/);
   var prop = parts[0].replace(/\:$/, '');
-  if (!this.isValidProp(prop)) return;
+  if (!isValidProp(prop)) return;
 
   if (parts[1].trim().charAt(0) === ':') parts[1] = '';
 
@@ -123,22 +123,6 @@ Parser.prototype.findSignificantLine = function(offset) {
 Parser.prototype.countSpaces = function(line) {
   line = line.replace(/\t/g, this.tabSpacing);
   return ((/^( *)/.exec(line) || [])[1] || '').length;
-};
-
-Parser.prototype.isValidProp = function(prop) {
-  if (isValidProp(prop) || /^-(webkit|ms|moz|o|khtml|epub|internal)/.test(prop)) return true;
-  // add any additional properties
-  if (prop.indexOf('order') === 0) return true;
-  if (prop.indexOf('filter') === 0) return true;
-  if (prop.indexOf('align-') === 0) return true;
-  if (prop.indexOf('justify-') === 0) return true;
-  if (prop.indexOf('background-') === 0) return true;
-  if (prop.indexOf('will-change') === 0) return true;
-  if (prop.indexOf('flex') === 0) return true;
-  if (prop.indexOf('animation') === 0) return true;
-  if (prop.indexOf('text-') === 0) return true;
-  if (prop.indexOf('src') === 0) return true;
-  return false;
 };
 
 function numToWs(count) {
